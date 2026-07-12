@@ -30,18 +30,3 @@
 сообщения будут доходить. Рекомендация: в письме активации будет alias-строка —
 заменить ею email в `FORM_ENDPOINT` (`src/config.ts`), чтобы адрес не был виден
 в исходном коде страницы.
-
-## Локальная разработка
-
-```bash
-npm install
-npm run dev      # http://localhost:4321/
-npm run build    # статика в dist/
-```
-
-## TODO
-
-- [ ] Ссылка Telegram (`src/config.ts` → `telegram`) — кнопка появится автоматически
-- [ ] Заменить email на FormSubmit-alias после активации
-- [ ] Политика приватности (страница), если понадобится
-- [ ] Кастомный домен (опционально): CNAME + `site`/`base` в `astro.config.mjs`
