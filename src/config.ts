@@ -1,19 +1,19 @@
 // Контакты и настройки сайта — единственное место, где они меняются.
 export const CONTACT = {
-  email: 'stakhova@proton.me',
-  phone: '+48 788 336 175',
-  phoneHref: 'tel:+48788336175',
-  whatsapp: 'https://wa.me/48788336175',
   telegram: '', // добавить ссылку https://t.me/<username>, когда будет — кнопка появится автоматически
   city: 'Kraków',
 };
 
-// FormSubmit: письма приходят на email выше.
-// ВАЖНО: после первой отправки формы FormSubmit пришлёт на этот email письмо
-// с подтверждением — нужно кликнуть "Activate". После активации в личном
-// письме будет alias-строка — рекомендуется заменить email в endpoint на неё
-// (чтобы адрес не был виден в исходниках страницы).
-export const FORM_ENDPOINT = 'https://formsubmit.co/ajax/stakhova@proton.me';
+// Контакты собираются в браузере, чтобы простые скраперы не находили их в HTML.
+// Фрагменты записаны в обратном порядке и разворачиваются клиентским скриптом.
+export const CONTACT_PARTS = {
+  email: ['em.notorp', '@', 'avohkats'],
+  phone: ['571', '633', '887', '84+'],
+};
+
+// Web3Forms: access key предназначен для использования в клиентской форме.
+export const FORM_ENDPOINT = 'https://api.web3forms.com/submit';
+export const FORM_ACCESS_KEY = 'ee28d954-3388-4a0e-bf08-c4999b59512d';
 
 export const SITE = {
   url: 'https://olenastakhova.github.io',

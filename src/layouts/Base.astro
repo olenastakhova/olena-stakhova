@@ -1,5 +1,5 @@
 ---
-import { SITE, LANGS, CONTACT, FORM_ENDPOINT } from '../config';
+import { SITE, LANGS, CONTACT_PARTS, FORM_ENDPOINT, FORM_ACCESS_KEY } from '../config';
 import '../styles/global.css';
 
 interface Props { t: Record<string, string>; lang: string; }
@@ -16,8 +16,6 @@ const jsonLd = {
   name: 'Olena Stakhova — Psycholog dziecięcy i młodzieżowy',
   description: t['meta.desc'],
   url: canonical,
-  email: CONTACT.email,
-  telephone: CONTACT.phone.replace(/\s/g, ''),
   areaServed: 'Kraków',
   knowsLanguage: ['pl', 'uk', 'en', 'ru'],
   image: `${SITE.url}${base}/assets/portrait-hero.jpg`,
@@ -50,7 +48,24 @@ const jsonLd = {
 <body>
   <slot />
 
-  <script is:inline define:vars={{ FORM_ENDPOINT }}>
+  <script is:inline define:vars={{ FORM_ENDPOINT, FORM_ACCESS_KEY, CONTACT_PARTS }}>
+    /* assemble contact details outside the static HTML */
+    const revealContact = (parts) => parts.map((part) => [...part].reverse().join('')).reverse().join('');
+    const email = revealContact(CONTACT_PARTS.email);
+    const phone = revealContact(CONTACT_PARTS.phone);
+    const phoneLabel = phone.replace(/^(\+\d{2})(\d{3})(\d{3})(\d{3})$/, '$1 $2 $3 $4');
+    document.querySelectorAll('[data-contact="phone"]').forEach((el) => {
+      el.href = `tel:${phone}`;
+      el.querySelector('[data-contact-text]').textContent = phoneLabel;
+    });
+    document.querySelectorAll('[data-contact="email"]').forEach((el) => {
+      el.href = `mailto:${email}`;
+      el.querySelector('[data-contact-text]').textContent = email;
+    });
+    document.querySelectorAll('[data-contact="whatsapp"]').forEach((el) => {
+      el.href = `https://wa.me/${phone.replace(/\D/g, '')}`;
+    });
+
     /* header */
     const header = document.querySelector('header');
     addEventListener('scroll', () => header.classList.toggle('scrolled', scrollY > 10), { passive: true });
@@ -89,7 +104,7 @@ const jsonLd = {
       }, { passive: true });
     }
 
-    /* form → FormSubmit (AJAX, no backend needed on GitHub Pages) */
+    /* form → Web3Forms (AJAX, no backend needed on GitHub Pages) */
     const form = document.getElementById('form');
     if (form) {
       form.addEventListener('submit', async (e) => {
@@ -98,7 +113,8 @@ const jsonLd = {
         const err = document.getElementById('form-err');
         const btn = form.querySelector('button[type="submit"]');
         const data = Object.fromEntries(new FormData(form));
-        if (data._honey) return; /* bot trap */
+        if (data.botcheck) return; /* bot trap */
+        data.access_key = FORM_ACCESS_KEY;
         btn.disabled = true; ok.style.display = 'none'; err.style.display = 'none';
         try {
           const r = await fetch(FORM_ENDPOINT, {
