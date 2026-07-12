@@ -1,0 +1,11 @@
+# build
+node_modules/
+dist/
+.astro/
+
+# private materials — CV contains personal data, must NOT go to a public repo
+stakhova/
+
+# os
+.DS_Store
+Thumbs.db

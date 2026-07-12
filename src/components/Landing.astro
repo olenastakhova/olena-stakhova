@@ -1,0 +1,289 @@
+---
+import Base from '../layouts/Base.astro';
+import { CONTACT, LANGS } from '../config';
+
+interface Props { t: Record<string, string>; lang: string; }
+const { t, lang } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const helpIcons = [
+  '<path d="M13 22s-8-4.6-8-11a5 5 0 0 1 8-4 5 5 0 0 1 8 4c0 6.4-8 11-8 11Z" stroke="#BC5F3F" stroke-width="1.6" stroke-linejoin="round"/>',
+  '<circle cx="13" cy="13" r="9" stroke="#BC5F3F" stroke-width="1.6"/><path d="M9.5 14.5c1 1.2 2.2 1.8 3.5 1.8s2.5-.6 3.5-1.8" stroke="#BC5F3F" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="10.5" r="1" fill="#BC5F3F"/><circle cx="16" cy="10.5" r="1" fill="#BC5F3F"/>',
+  '<path d="M4 20c3-1 4-4 4-7 0-3 2-6 5-6s5 3 5 6c0 3 1 6 4 7M4 20h18" stroke="#BC5F3F" stroke-width="1.6" stroke-linecap="round"/>',
+  '<path d="M13 4v5M13 17v5M4 13h5M17 13h5" stroke="#BC5F3F" stroke-width="1.6" stroke-linecap="round"/><circle cx="13" cy="13" r="3.2" stroke="#BC5F3F" stroke-width="1.6"/>',
+  '<rect x="4" y="6" width="18" height="12" rx="3" stroke="#BC5F3F" stroke-width="1.6"/><path d="M9 21h8" stroke="#BC5F3F" stroke-width="1.6" stroke-linecap="round"/><path d="M10 11.5 12 13.5 16 9.5" stroke="#BC5F3F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>',
+  '<circle cx="9" cy="9" r="3.4" stroke="#BC5F3F" stroke-width="1.6"/><circle cx="17.5" cy="11" r="2.6" stroke="#BC5F3F" stroke-width="1.6"/><path d="M3.5 21c.6-3.4 2.8-5.4 5.5-5.4S13.9 17.6 14.5 21M15 20.5c.4-2.4 1.6-3.8 3.4-3.8 1.5 0 2.7 1 3.3 2.8" stroke="#BC5F3F" stroke-width="1.6" stroke-linecap="round"/>',
+];
+const timelineYears = ['2016', '2018', '2022', '2023', '2024', '2025', '2026'];
+const orgs = ['SOS Wioski Dziecięce', 'Internationaler Bund Polska', 'Dajemy Dzieciom Siłę', 'Instytut Matki i Dziecka', 'WSKZ × UJ', 'Via Viator', 'First Step'];
+const arrow = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8h11M9 3.5 13.5 8 9 12.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+---
+<Base t={t} lang={lang}>
+
+<header id="top">
+  <div class="wrap nav">
+    <a class="logo" href={`${base}/${LANGS.find(l=>l.code===lang)?.path ?? ''}`}>Olena Stakhova<span>.</span></a>
+    <nav class="nav-links">
+      <a href="#pomagam">{t['nav.help']}</a>
+      <a href="#oferta">{t['nav.offer']}</a>
+      <a href="#o-mnie">{t['nav.about']}</a>
+      <a href="#doswiadczenie">{t['nav.exp']}</a>
+      <a href="#kontakt">{t['nav.contact']}</a>
+    </nav>
+    <div class="langs" aria-label="Language">
+      {LANGS.map((l) => (
+        <a href={`${base}/${l.path}`} class:list={[{ on: l.code === lang }]} lang={l.code}>{l.label}</a>
+      ))}
+    </div>
+    <a class="btn btn-primary btn-sm" href="#kontakt">{t['nav.cta']}</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">{t['hero.eyebrow']}</span>
+      <h1>{t['hero.title']}</h1>
+      <p class="lead">{t['hero.lead']}</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#kontakt"><span>{t['hero.cta1']}</span><Fragment set:html={arrow} /></a>
+        <a class="btn btn-ghost" href="#o-mnie">{t['hero.cta2']}</a>
+      </div>
+      <div class="chips">
+        <span class="chip"><span class="dot"></span><span>{t['hero.chip1']}</span></span>
+        <span class="chip"><span class="dot"></span>PL · UA · EN · RU</span>
+        <span class="chip"><span class="dot"></span><span>{t['hero.chip3']}</span></span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <svg class="blob" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+        <path d="M60 6 C92 6 114 30 109 56 C104 82 76 96 52 90 C28 84 8 66 13 42 C18 18 36 6 60 6Z" fill="#F6E7DF"/>
+      </svg>
+      <img class="portrait" src={`${base}/assets/portrait-hero.jpg`} alt={t['alt.hero']} width="825" height="1024" fetchpriority="high" />
+      <svg class="branch" viewBox="0 0 120 130" fill="none" aria-hidden="true">
+        <path d="M60 122 C60 80 60 45 60 12 M60 92 C44 87 34 74 34 58 C50 63 60 74 60 92Z M60 62 C76 57 86 44 86 28 C70 33 60 44 60 62Z" stroke="#7C8B74" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="hero-card">
+        <span class="n" data-count="10">10</span>
+        <span class="t">{t['hero.card']}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HELP -->
+<section class="alt" id="pomagam">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="label">{t['help.label']}</div>
+      <h2>{t['help.title']}</h2>
+      <p>{t['help.sub']}</p>
+    </div>
+    <div class="grid-3">
+      {helpIcons.map((icon, i) => (
+        <div class="card rv" style={`--i:${i}`}>
+          <div class="ic"><svg width="26" height="26" viewBox="0 0 26 26" fill="none" set:html={icon} /></div>
+          <h3>{t[`help.${i + 1}h`]}</h3>
+          <p>{t[`help.${i + 1}p`]}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- OFFER -->
+<section id="oferta">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="label">{t['offer.label']}</div>
+      <h2>{t['offer.title']}</h2>
+    </div>
+    <div class="grid-2">
+      {[1, 2, 3, 4].map((n, i) => (
+        <div class="offer-card rv" style={`--i:${i}`}>
+          <span class="num">{`0${n}`}</span>
+          <h3>{t[`offer.${n}h`]}</h3>
+          <p>{t[`offer.${n}p`]}</p>
+          <span class="meta">{t[`offer.${n}m`]}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="alt about" id="o-mnie">
+  <div class="wrap">
+    <div class="about-visual rv">
+      <svg class="arcs" width="150" height="110" viewBox="0 0 150 110" fill="none" aria-hidden="true">
+        <path d="M20 96 A55 55 0 0 1 130 96" stroke="#BC5F3F" stroke-width="1.5" stroke-linecap="round" opacity=".8"/>
+        <path d="M36 96 A39 39 0 0 1 114 96" stroke="#BC5F3F" stroke-width="1.5" stroke-linecap="round" opacity=".45"/>
+        <path d="M52 96 A23 23 0 0 1 98 96" stroke="#BC5F3F" stroke-width="1.5" stroke-linecap="round" opacity=".22"/>
+      </svg>
+      <img src={`${base}/assets/portrait-about.jpg`} alt={t['alt.about']} width="825" height="1024" loading="lazy" />
+    </div>
+    <div>
+      <div class="label rv">{t['about.label']}</div>
+      <h2 class="rv">{t['about.title']}</h2>
+      <div style="height:22px"></div>
+      <p class="rv">{t['about.p1']}</p>
+      <p class="rv">{t['about.p2']}</p>
+      <p class="quote rv">{t['about.quote']}</p>
+      <div class="tags rv">
+        <span class="tag">{t['about.t1']}</span>
+        <span class="tag">{t['about.t2']}</span>
+        <span class="tag">TeamUp</span>
+        <span class="tag">TUS</span>
+        <span class="tag">{t['about.t5']}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="doswiadczenie">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="label">{t['exp.label']}</div>
+      <h2>{t['exp.title']}</h2>
+    </div>
+    <div class="exp-grid">
+      <div class="timeline" id="timeline">
+        <div class="prog" id="tl-prog"></div>
+        {timelineYears.map((year, i) => (
+          <div class="tl-item rv">
+            <span class="y">{year}</span>
+            <p>{t[`exp.t${i + 1}`]}</p>
+          </div>
+        ))}
+      </div>
+      <div>
+        <div class="counters">
+          <div class="counter rv" style="--i:0"><div class="n"><span data-count="10">0</span></div><div class="t">{t['exp.c1']}</div></div>
+          <div class="counter rv" style="--i:1"><div class="n"><span data-count="4">0</span></div><div class="t">{t['exp.c2']}</div></div>
+          <div class="counter rv" style="--i:2"><div class="n"><span data-count="12">0</span>+</div><div class="t">{t['exp.c3']}</div></div>
+        </div>
+        <p class="orgs-note rv">{t['exp.orgs']}</p>
+        <div class="orgs rv">
+          {orgs.map((org) => <span class="org">{org}</span>)}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section class="alt" id="proces">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="label">{t['steps.label']}</div>
+      <h2>{t['steps.title']}</h2>
+    </div>
+    <div class="steps">
+      {[1, 2, 3, 4].map((n, i) => (
+        <div class="step rv" style={`--i:${i}`}>
+          <div class="sn">{n}</div>
+          <h3>{t[`steps.${n}h`]}</h3>
+          <p>{t[`steps.${n}p`]}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="label">FAQ</div>
+      <h2>{t['faq.title']}</h2>
+    </div>
+    <div class="faq-list rv">
+      {[1, 2, 3, 4, 5].map((n) => (
+        <details class="faq-item">
+          <summary><span>{t[`faq.${n}q`]}</span><span class="pl"></span></summary>
+          <p class="a">{t[`faq.${n}a`]}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="alt" id="kontakt">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="label">{t['contact.label']}</div>
+      <h2>{t['contact.title']}</h2>
+      <p>{t['contact.lead']}</p>
+    </div>
+    <div class="contact-grid">
+      <form class="form-card rv" id="form">
+        <input type="hidden" name="_subject" value="Nowa wiadomość ze strony — konsultacja" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" />
+        <label for="f-name">{t['form.name']}</label>
+        <input id="f-name" type="text" name="name" required placeholder={t['form.nameph']} />
+        <label for="f-contact">{t['form.contact']}</label>
+        <input id="f-contact" type="text" name="contact" required placeholder={t['form.contactph']} />
+        <label for="f-lang">{t['form.lang']}</label>
+        <select id="f-lang" name="language">
+          <option>Polski</option><option>Українська</option><option>English</option><option>Русский</option>
+        </select>
+        <label for="f-msg">{t['form.msg']}</label>
+        <textarea id="f-msg" name="message" placeholder={t['form.msgph']}></textarea>
+        <button class="btn btn-primary" type="submit"><span>{t['form.send']}</span><Fragment set:html={arrow} /></button>
+        <div class="form-ok" id="form-ok" role="status">{t['form.ok']}</div>
+        <div class="form-err" id="form-err" role="alert">{t['form.err']}</div>
+        <p class="privacy">{t['form.privacy']}</p>
+      </form>
+      <div class="side">
+        <div class="side-card rv">
+          <h3>{t['contact.direct']}</h3>
+          <a class="contact-line" href={CONTACT.phoneHref}>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M6.8 2.5 8 5.2 6.4 6.8c.8 1.7 2.1 3 3.8 3.8L11.8 9l2.7 1.2v2.6c0 .9-.8 1.7-1.7 1.6C7.4 13.9 3.1 9.6 2.6 4.2c-.1-.9.7-1.7 1.6-1.7h2.6Z" stroke="#9E4A2E" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            {CONTACT.phone}
+          </a>
+          <a class="contact-line" href={`mailto:${CONTACT.email}`}>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="3.5" width="14" height="11" rx="2" stroke="#9E4A2E" stroke-width="1.5"/><path d="m3 5.5 6 4.5 6-4.5" stroke="#9E4A2E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            {CONTACT.email}
+          </a>
+          <div class="msgr">
+            <a href={CONTACT.whatsapp} target="_blank" rel="noopener">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5A6.5 6.5 0 0 0 2.4 11.3L1.5 14.5l3.3-.9A6.5 6.5 0 1 0 8 1.5Z" stroke="#7C8B74" stroke-width="1.4" stroke-linejoin="round"/></svg>
+              WhatsApp
+            </a>
+            {CONTACT.telegram && (
+              <a href={CONTACT.telegram} target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="m14.5 2-13 5.4 4 1.4M14.5 2l-2 12-5-4.2M14.5 2 5.5 8.8v4.2l2-2.4" stroke="#7C8B74" stroke-width="1.4" stroke-linejoin="round"/></svg>
+                Telegram
+              </a>
+            )}
+          </div>
+          <p class="loc">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 14.5s-5-3.6-5-7.5a5 5 0 0 1 10 0c0 3.9-5 7.5-5 7.5Z" stroke="#6E6A61" stroke-width="1.4"/><circle cx="8" cy="7" r="1.8" stroke="#6E6A61" stroke-width="1.4"/></svg>
+            <span>{t['contact.loc']}</span>
+          </p>
+        </div>
+        <div class="side-card rv" style="background:#fff;border:1px solid var(--line)">
+          <h3>{t['contact.langs']}</h3>
+          <p style="font-size:14.5px;color:var(--stone)">{t['contact.langsp']}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="logo">Olena Stakhova<span style="color:var(--clay)">.</span></span>
+    <span>{t['footer.role']}</span>
+    <nav>
+      <a href="#top">{t['footer.up']}</a>
+    </nav>
+  </div>
+</footer>
+
+</Base>

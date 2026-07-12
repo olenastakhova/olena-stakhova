@@ -1,0 +1,122 @@
+---
+import { SITE, LANGS, CONTACT, FORM_ENDPOINT } from '../config';
+import '../styles/global.css';
+
+interface Props { t: Record<string, string>; lang: string; }
+const { t, lang } = Astro.props;
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const current = LANGS.find((l) => l.code === lang) ?? LANGS[0];
+const canonical = `${SITE.url}${base}/${current.path}`;
+const ogLocale: Record<string, string> = { pl: 'pl_PL', uk: 'uk_UA', en: 'en_GB', ru: 'ru_RU' };
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'Olena Stakhova — Psycholog dziecięcy i młodzieżowy',
+  description: t['meta.desc'],
+  url: canonical,
+  email: CONTACT.email,
+  telephone: CONTACT.phone.replace(/\s/g, ''),
+  areaServed: 'Kraków',
+  knowsLanguage: ['pl', 'uk', 'en', 'ru'],
+  image: `${SITE.url}${base}/assets/portrait-hero.jpg`,
+};
+---
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{t['meta.title']}</title>
+  <meta name="description" content={t['meta.desc']} />
+  <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+  <link rel="canonical" href={canonical} />
+  {LANGS.map((l) => (
+    <link rel="alternate" hreflang={l.code} href={`${SITE.url}${base}/${l.path}`} />
+  ))}
+  <link rel="alternate" hreflang="x-default" href={`${SITE.url}${base}/`} />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={t['meta.title']} />
+  <meta property="og:description" content={t['meta.desc']} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={`${SITE.url}${base}/assets/portrait-hero.jpg`} />
+  <meta property="og:locale" content={ogLocale[lang]} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500;600&display=swap&subset=latin-ext,cyrillic" rel="stylesheet" />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</head>
+<body>
+  <slot />
+
+  <script is:inline define:vars={{ FORM_ENDPOINT }}>
+    /* header */
+    const header = document.querySelector('header');
+    addEventListener('scroll', () => header.classList.toggle('scrolled', scrollY > 10), { passive: true });
+
+    /* reveal on scroll */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('on'); io.unobserve(en.target); } });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.rv').forEach((el) => io.observe(el));
+
+    /* counters */
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const cio = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        const el = en.target, target = +el.dataset.count, dur = 1200, t0 = performance.now();
+        const tick = (t) => {
+          const p = Math.min((t - t0) / dur, 1);
+          el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+        cio.unobserve(el);
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('[data-count]').forEach((el) => {
+      if (reduced) el.textContent = el.dataset.count; else cio.observe(el);
+    });
+
+    /* timeline progress */
+    const tl = document.getElementById('timeline'), prog = document.getElementById('tl-prog');
+    if (tl && prog) {
+      addEventListener('scroll', () => {
+        const r = tl.getBoundingClientRect();
+        prog.style.height = Math.min(Math.max(innerHeight * 0.75 - r.top, 0), r.height) + 'px';
+      }, { passive: true });
+    }
+
+    /* form → FormSubmit (AJAX, no backend needed on GitHub Pages) */
+    const form = document.getElementById('form');
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const ok = document.getElementById('form-ok');
+        const err = document.getElementById('form-err');
+        const btn = form.querySelector('button[type="submit"]');
+        const data = Object.fromEntries(new FormData(form));
+        if (data._honey) return; /* bot trap */
+        btn.disabled = true; ok.style.display = 'none'; err.style.display = 'none';
+        try {
+          const r = await fetch(FORM_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(data),
+          });
+          const j = await r.json();
+          if (!r.ok || !(j.success === true || j.success === 'true')) throw new Error();
+          ok.style.display = 'block';
+          form.reset();
+        } catch {
+          err.style.display = 'block';
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    }
+  </script>
+</body>
+</html>
