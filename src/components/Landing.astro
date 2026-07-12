@@ -20,7 +20,7 @@ const arrow = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path
 ---
 <Base t={t} lang={lang}>
 
-<header id="top">
+<header>
   <div class="wrap nav">
     <a class="logo" href={`${base}/${LANGS.find(l=>l.code===lang)?.path ?? ''}`}>Olena Stakhova<span>.</span></a>
     <nav class="nav-links">
@@ -279,6 +279,7 @@ const arrow = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path
   <div class="wrap">
     <span class="logo">Olena Stakhova<span style="color:var(--clay)">.</span></span>
     <span>{t['footer.role']}</span>
+    <span>© 2026</span>
     <nav>
       <a href="#top">{t['footer.up']}</a>
     </nav>
